@@ -3,7 +3,7 @@ package com.aleksmurmur.hairdresser.tests
 import com.aleksmurmur.hairdresser.api.SCHEDULE_PATH
 import com.aleksmurmur.hairdresser.configuration.Context
 import com.aleksmurmur.hairdresser.schedule.domain.DaySchedule
-import com.aleksmurmur.hairdresser.schedule.domain.TimeslotStatus
+import com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus
 import com.aleksmurmur.hairdresser.schedule.dto.DayScheduleCreateOrUpdateRequest
 import com.aleksmurmur.hairdresser.schedule.dto.DayScheduleResponse
 import com.aleksmurmur.hairdresser.schedule.dto.TimetableCreateRequest
@@ -244,7 +244,8 @@ class ScheduleApiTests : Context() {
         fun `returns bad request if has end time conflict`() {
             val request = dayScheduleCreateOrUpdateRequest().copy(
                 date = daySchedule1MinusDayWithBookedTimeslot.persistentId,
-                timeTo = daySchedule1MinusDayWithBookedTimeslot.bookedTimeslots.last().timeTo.minusSeconds(1),
+                timeTo = daySchedule1MinusDayWithBookedTimeslot.bookedTimeslots.last()
+                    .let { it.timeFrom.plus(it.duration).minusSeconds(1)},
                 workingDay = true
             )
             updateDaySchedule(request)
@@ -256,7 +257,8 @@ class ScheduleApiTests : Context() {
             val request = dayScheduleCreateOrUpdateRequest().copy(
                 date = daySchedule1MinusDayWithBookedTimeslot.persistentId,
                 timeFrom = daySchedule1MinusDayWithBookedTimeslot.bookedTimeslots.first().timeFrom.minusSeconds(1),
-                timeTo = daySchedule1MinusDayWithBookedTimeslot.bookedTimeslots.last().timeTo.plusSeconds(1),
+                timeTo = daySchedule1MinusDayWithBookedTimeslot.bookedTimeslots.last()
+                    .let { it.timeFrom.plus(it.duration).plusSeconds(1)},
                 workingDay = true
             )
             updateDaySchedule(request)
@@ -265,7 +267,7 @@ class ScheduleApiTests : Context() {
                 .run {
                     assertEquals(request.timeFrom, workingTimeFrom)
                     assertEquals(request.timeTo, workingTimeTo)
-                    assertEquals(1, timeslots.filter { it.status == TimeslotStatus.BOOKED }.size)
+                    assertEquals(1, timeslots.filter { it.status == TimeslotStatus.BUSY }.size)
                 }
         }
 

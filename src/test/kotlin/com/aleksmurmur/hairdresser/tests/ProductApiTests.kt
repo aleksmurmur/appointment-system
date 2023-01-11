@@ -1,6 +1,6 @@
 package com.aleksmurmur.hairdresser.tests
 
-import com.aleksmurmur.hairdresser.api.PRODUCT_PATH
+import com.aleksmurmur.hairdresser.api.PRODUCTS_PATH
 import com.aleksmurmur.hairdresser.configuration.Context
 import com.aleksmurmur.hairdresser.product.domain.Product
 import com.aleksmurmur.hairdresser.product.dto.ProductCreateRequest
@@ -58,7 +58,7 @@ class ProductApiTests : Context() {
         }
 
         private fun getProduct(id: UUID) =
-            testClient.get("$PRODUCT_PATH/$id")
+            testClient.get("$PRODUCTS_PATH/$id")
     }
 
     @Nested
@@ -75,7 +75,7 @@ class ProductApiTests : Context() {
         }
 
         private fun getProducts() =
-            testClient.get(PRODUCT_PATH)
+            testClient.get(PRODUCTS_PATH)
     }
 
     @Nested
@@ -116,7 +116,7 @@ class ProductApiTests : Context() {
         }
 
         private fun createProduct(request: ProductCreateRequest) =
-            testClient.post(PRODUCT_PATH) {
+            testClient.post(PRODUCTS_PATH) {
                 content = mapper.writeValueAsString(request)
                 contentType = MediaType.APPLICATION_JSON
             }
@@ -177,7 +177,7 @@ class ProductApiTests : Context() {
         }
 
         private fun updateProduct(id: UUID, request: ProductUpdateRequest) =
-            testClient.patch("$PRODUCT_PATH/$id") {
+            testClient.patch("$PRODUCTS_PATH/$id") {
                 content = mapper.writeValueAsString(request)
                 contentType = MediaType.APPLICATION_JSON
             }
@@ -198,7 +198,7 @@ class ProductApiTests : Context() {
         }
 
         private fun deleteProduct(id: UUID) =
-            testClient.delete("$PRODUCT_PATH/$id")
+            testClient.delete("$PRODUCTS_PATH/$id")
     }
 
     }

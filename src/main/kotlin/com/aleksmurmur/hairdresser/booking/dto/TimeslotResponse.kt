@@ -1,7 +1,7 @@
-package com.aleksmurmur.hairdresser.schedule.dto
+package com.aleksmurmur.hairdresser.booking.dto
 
-import com.aleksmurmur.hairdresser.schedule.domain.Timeslot
-import com.aleksmurmur.hairdresser.schedule.domain.TimeslotStatus
+import com.aleksmurmur.hairdresser.booking.domain.Timeslot
+import com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus
 import java.time.LocalTime
 
 class TimeslotResponse (
@@ -12,8 +12,8 @@ class TimeslotResponse (
     object Mapper {
         fun from(t : Timeslot) = TimeslotResponse(
             t.timeFrom,
-            t.timeTo,
-            t.status
+            t.timeFrom.plus(t.duration),
+            t.timeslotStatus
         )
     }
 }

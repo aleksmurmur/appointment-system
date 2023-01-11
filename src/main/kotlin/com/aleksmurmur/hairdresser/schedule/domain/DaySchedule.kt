@@ -1,5 +1,6 @@
 package com.aleksmurmur.hairdresser.schedule.domain
 
+import com.aleksmurmur.hairdresser.booking.domain.Timeslot
 import com.aleksmurmur.hairdresser.common.jpa.DateIdentifiableEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.OneToMany

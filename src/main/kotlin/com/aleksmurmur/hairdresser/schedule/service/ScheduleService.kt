@@ -5,11 +5,11 @@ import com.aleksmurmur.hairdresser.exception.BadRequestException
 import com.aleksmurmur.hairdresser.exception.EntityNotFoundException
 import com.aleksmurmur.hairdresser.exception.UnavailableActionException
 import com.aleksmurmur.hairdresser.schedule.domain.DaySchedule
-import com.aleksmurmur.hairdresser.schedule.domain.Timeslot
-import com.aleksmurmur.hairdresser.schedule.domain.TimeslotStatus
+import com.aleksmurmur.hairdresser.booking.domain.Timeslot
+import com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus
 import com.aleksmurmur.hairdresser.schedule.dto.DayScheduleCreateOrUpdateRequest
 import com.aleksmurmur.hairdresser.schedule.dto.DayScheduleResponse
-import com.aleksmurmur.hairdresser.schedule.dto.TimeslotResponse
+import com.aleksmurmur.hairdresser.booking.dto.TimeslotResponse
 import com.aleksmurmur.hairdresser.schedule.dto.TimetableCreateRequest
 import com.aleksmurmur.hairdresser.schedule.repository.ScheduleRepository
 import jakarta.annotation.security.RolesAllowed
@@ -116,7 +116,7 @@ class ScheduleService(
             bookedTimeslots
                 .sortedBy { it.timeFrom }
                 .let {
-                    request.checkTimeConflicts(it.first().timeFrom, it.last().timeTo)
+                    request.checkTimeConflicts(it.first().timeFrom, it.last().run { this.timeFrom.plus(this.duration) })
                 }
         }
 
@@ -177,7 +177,7 @@ class ScheduleService(
         )
 
         return bookedTimeslots
-            .filter { it.status == TimeslotStatus.BOOKED }
+            .filter { it.timeslotStatus == TimeslotStatus.BUSY }
             .sortedBy { it.timeFrom }
             .addFreeTimeslots(schedule.workingTimeFrom!!, schedule.workingTimeTo!!)
 
@@ -202,10 +202,11 @@ class ScheduleService(
                 result.add(TimeslotResponse.Mapper.from(it.value))
                 if (it.index + 1 < this.size) {
                     val nextTimeFrom = this[it.index + 1].timeFrom
-                    if (durationIsLongerThanShortestService(it.value.timeTo, nextTimeFrom)) {
+                    val thisTimeTo = it.value.timeFrom.plus(it.value.duration)
+                    if (durationIsLongerThanShortestService(thisTimeTo, nextTimeFrom)) {
                         result.add(
                             TimeslotResponse(
-                                it.value.timeTo,
+                                thisTimeTo,
                                 nextTimeFrom,
                                 TimeslotStatus.FREE
                             )
@@ -214,12 +215,12 @@ class ScheduleService(
                 }
             }
 
-
+        val lastTimeTo = this.last().timeFrom.plus(this.last().duration)
         if (durationIsLongerThanShortestService(
-                this.last().timeTo,
+                lastTimeTo,
                 timeTo
             )
-        ) result.add(TimeslotResponse(this.last().timeTo, timeTo, TimeslotStatus.FREE))
+        ) result.add(TimeslotResponse(lastTimeTo, timeTo, TimeslotStatus.FREE))
 
         return result
     }
