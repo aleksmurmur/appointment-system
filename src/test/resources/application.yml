@@ -1,0 +1,13 @@
+app:
+  service:
+    shortest:  30
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  profiles:
+    active: test

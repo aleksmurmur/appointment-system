@@ -1,3 +1,3 @@
-package dev.codefish.smstrerching.core.exception
+package com.aleksmurmur.hairdresser.exception
 
 class EntityNotPersistedException(message: String) : BaseException(message)

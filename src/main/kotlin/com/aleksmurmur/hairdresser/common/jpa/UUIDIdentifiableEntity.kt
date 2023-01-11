@@ -1,4 +1,4 @@
-package com.example.hairdresser.common.jpa
+package com.aleksmurmur.hairdresser.common.jpa
 
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id

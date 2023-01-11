@@ -1,6 +1,7 @@
-package dev.codefish.smstrerching.core.common.utils.jpa
+package com.aleksmurmur.hairdresser.common.jpa
 
-import dev.codefish.smstrerching.core.exception.EntityNotFoundException
+
+import com.aleksmurmur.hairdresser.exception.EntityNotFoundException
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.findByIdOrNull
 import java.io.Serializable

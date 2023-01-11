@@ -1,6 +1,7 @@
-package com.example.hairdresser.common.jpa
+package com.aleksmurmur.hairdresser.common.jpa
 
-import dev.codefish.smstrerching.core.exception.EntityNotPersistedException
+
+import com.aleksmurmur.hairdresser.exception.EntityNotPersistedException
 import java.io.Serializable
 
 abstract class JpaPersistable<T : Serializable> {

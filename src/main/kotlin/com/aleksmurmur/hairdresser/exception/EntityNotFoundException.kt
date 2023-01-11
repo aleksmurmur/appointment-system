@@ -1,4 +1,8 @@
 package com.aleksmurmur.hairdresser.exception
 
-class EntityNotFoundException {
+import org.springframework.http.HttpStatus
+
+class EntityNotFoundException(message: String) : BaseException(message) {
+    override val httpStatus: HttpStatus
+        get() = HttpStatus.NOT_FOUND
 }

@@ -1,4 +1,4 @@
-package dev.codefish.smstrerching.core.exception
+package com.aleksmurmur.hairdresser.exception
 
 import org.springframework.http.HttpStatus
 
