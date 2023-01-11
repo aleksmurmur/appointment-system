@@ -16,12 +16,11 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 
 @SpringBootTest
-@AutoConfigureMockMvc(addFilters = false) //FIXME check if needed
+@AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(initializers = [PostgresInitializer::class])
-@EnableAutoConfiguration //FIXME check if needed (works without)
+@EnableAutoConfiguration
 
  class Context {
-
 
 
 @Autowired
