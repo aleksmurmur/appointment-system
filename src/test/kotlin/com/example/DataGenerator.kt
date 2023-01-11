@@ -9,6 +9,7 @@ import com.aleksmurmur.hairdresser.product.dto.ProductUpdateRequest
 import com.aleksmurmur.hairdresser.schedule.domain.DaySchedule
 import com.aleksmurmur.hairdresser.booking.domain.Timeslot
 import com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus
+import com.aleksmurmur.hairdresser.booking.dto.TimeslotCreateOrUpdateRequest
 import com.aleksmurmur.hairdresser.schedule.dto.DayScheduleCreateOrUpdateRequest
 import com.aleksmurmur.hairdresser.schedule.dto.TimetableCreateRequest
 import com.aleksmurmur.hairdresser.schedule.dto.TimetableWorkingSlot
@@ -50,6 +51,13 @@ fun timeslot(schedule: DaySchedule) = Timeslot(
     randomDuration(),
     schedule,
     TimeslotStatus.BUSY
+)
+
+fun timeslotCreateRequest(date: LocalDate? = null, status: TimeslotStatus = TimeslotStatus.UNAVAILABLE) = TimeslotCreateOrUpdateRequest(
+    date ?: randomFutureDate(),
+    randomLocalTime(),
+    randomDuration(),
+    status
 )
 
 fun timetableCreateRequest() = TimetableCreateRequest(

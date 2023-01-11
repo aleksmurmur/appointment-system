@@ -234,7 +234,7 @@ class ClientApiTests : Context() {
         @Test
         fun `returns 404 if non existent id handled`() {
             updateClient(clientUpdateRequest(), UUID.randomUUID())
-                .andExpect { status { isBadRequest() } }
+                .andExpect { status { isNotFound() } }
         }
 
         private fun updateClient(request: ClientUpdateRequest, clientId: UUID) =
