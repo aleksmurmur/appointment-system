@@ -1,6 +1,7 @@
 package com.aleksmurmur.hairdresser.schedule.dto
 
 
+import com.aleksmurmur.hairdresser.booking.dto.TimeslotResponse
 import java.time.LocalDate
 import java.time.LocalTime
 

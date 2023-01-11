@@ -1,6 +1,6 @@
 package com.aleksmurmur.hairdresser.product.api
 
-import com.aleksmurmur.hairdresser.api.PRODUCT_PATH
+import com.aleksmurmur.hairdresser.api.PRODUCTS_PATH
 import com.aleksmurmur.hairdresser.product.dto.ProductCreateRequest
 import com.aleksmurmur.hairdresser.product.dto.ProductResponse
 import com.aleksmurmur.hairdresser.product.dto.ProductUpdateRequest
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.UUID
 
 @RestController
-@RequestMapping(PRODUCT_PATH)
+@RequestMapping(PRODUCTS_PATH)
 class ProductController (
     private val productService: ProductService
         ){

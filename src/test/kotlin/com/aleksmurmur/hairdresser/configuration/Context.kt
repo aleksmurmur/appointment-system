@@ -6,7 +6,7 @@ import com.aleksmurmur.hairdresser.client.repository.ClientRepository
 import com.aleksmurmur.hairdresser.configuration.postgres.PostgresInitializer
 import com.aleksmurmur.hairdresser.product.repository.ProductRepository
 import com.aleksmurmur.hairdresser.schedule.repository.ScheduleRepository
-import com.aleksmurmur.hairdresser.schedule.repository.TimeslotRepository
+import com.aleksmurmur.hairdresser.booking.repository.TimeslotRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration

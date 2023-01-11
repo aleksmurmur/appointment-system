@@ -8,5 +8,5 @@ import java.util.UUID
 @Repository
 interface BookingRepository : JpaRepository<Booking, UUID> {
 
-    //fun findByClient(id: UUID) : List<Booking>
+    fun findByClient(id: UUID) : List<Booking>
 }
