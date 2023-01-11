@@ -86,7 +86,7 @@ class ScheduleService(
     @RolesAllowed("admin.schedule:write")
     fun deleteDayScheduleByDate(date: LocalDate) {
         val daySchedule = scheduleRepository.findByIdOrThrow(date)
-        if (daySchedule.bookedTimeslots.isNotEmpty()) throw UnavailableActionException("На $date уже есть записи, отмените или перенесите их")
+        if (daySchedule.bookedTimeslots.any { it.timeslotStatus == TimeslotStatus.BUSY }) throw UnavailableActionException("На $date уже есть записи, отмените или перенесите их")
         return scheduleRepository.delete(daySchedule)
     }
 
@@ -95,7 +95,7 @@ class ScheduleService(
     fun deleteScheduleBetweenDates(dateFrom: LocalDate, dateTo: LocalDate) =
         scheduleRepository.findByIdGreaterThanEqualAndIdLessThanEqual(dateFrom, dateTo)
             .onEach { daySchedule ->
-                if (daySchedule.bookedTimeslots.isNotEmpty()) throw UnavailableActionException("На ${daySchedule.persistentId} уже есть записи, отмените или перенесите их")
+                if (daySchedule.bookedTimeslots.any { it.timeslotStatus == TimeslotStatus.BUSY }) throw UnavailableActionException("На ${daySchedule.persistentId} уже есть записи, отмените или перенесите их")
             }
             .forEach {
                 scheduleRepository.delete(it)
@@ -108,7 +108,7 @@ class ScheduleService(
         val daySchedule =
             scheduleRepository.findByIdOrThrow(request.date)
 
-        val bookedTimeslots = daySchedule.bookedTimeslots
+        val bookedTimeslots = daySchedule.bookedTimeslots.filter { it.timeslotStatus == TimeslotStatus.BUSY }
 
         if (bookedTimeslots.isNotEmpty()) {
             if (!request.workingDay) throw UnavailableActionException("На указанную дату уже есть записи, отмените или перенесите их")
@@ -166,7 +166,7 @@ class ScheduleService(
     private fun addTimeslots(schedule: DaySchedule): MutableList<TimeslotResponse> {
         if (!schedule.workingDay) return mutableListOf()
 
-        val bookedTimeslots = schedule.bookedTimeslots
+        val bookedTimeslots = schedule.bookedTimeslots.filter { it.timeslotStatus == TimeslotStatus.BUSY }
 
         if (bookedTimeslots.isEmpty()) return mutableListOf(
             TimeslotResponse(

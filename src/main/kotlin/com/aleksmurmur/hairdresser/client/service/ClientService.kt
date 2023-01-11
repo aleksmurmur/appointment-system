@@ -19,7 +19,7 @@ class ClientService (
     @Transactional(readOnly = true)
     @RolesAllowed("admin.clients:read")
     fun getByPhone(phone: String) : List<ClientResponse> =
-        clientRepository.findByPhoneContains(phone) //FIXME check if works exception
+        clientRepository.findByPhoneContains(phone)
             .map { ClientResponse.Mapper.from(it) }
 
     @Transactional(readOnly = true)

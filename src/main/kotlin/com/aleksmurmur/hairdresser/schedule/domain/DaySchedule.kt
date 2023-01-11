@@ -9,11 +9,10 @@ import java.time.LocalTime
 
 @Entity
 class DaySchedule (
-        //FIXME convert to zoneddatetime?
         date: LocalDate,
         var workingTimeFrom: LocalTime?,
         var workingTimeTo: LocalTime?,
-        var workingDay: Boolean, //FIXME add to service
+        var workingDay: Boolean,
         @OneToMany (mappedBy = "daySchedule")
         var bookedTimeslots: MutableList<Timeslot> = mutableListOf()
         ) : DateIdentifiableEntity(date) {

@@ -77,7 +77,7 @@ class BookingService(
     @RolesAllowed("admin.bookings:write")
     fun cancelBooking(id: UUID) {
          bookingRepository.findByIdOrThrow(id)
-            .apply { timeslotStatus = TimeslotStatus.FREE //TODO change in dayschedule looking only BUSY timeslots
+            .apply { timeslotStatus = TimeslotStatus.FREE
                 bookingStatus = BookingStatus.CANCELLED}
     }
 
