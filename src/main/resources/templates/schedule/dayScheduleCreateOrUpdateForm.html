@@ -48,11 +48,7 @@
 
 
 
-        <div class="form-actions">
-            <button th:if="${action}=='create'" type="submit" class="btn btn-success">Создать расписание на день</button>
-            <button th:if="${action}=='update'" type="submit" class="btn btn-success">Обновить расписание на день</button>
-
-        </div>
+        <div th:insert="~{fragments/bodyHeader :: applyButton (value='расписание')}" ></div>
     </form>
 </div>
 

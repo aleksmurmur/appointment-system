@@ -15,6 +15,7 @@ import org.springframework.web.bind.support.SessionStatus
 import java.util.*
 
 @Controller
+@RequestMapping(CLIENTS_VIEW_PATH)
 class ClientViewController   (
     private val clientService: ClientService
 ) {
@@ -44,7 +45,7 @@ class ClientViewController   (
     @GetMapping("/{id}")
     fun getById(@PathVariable id: UUID, model: Model) : String {
         model.addAttribute(clientService.getById(id))
-        return "products/productResponse"
+        return "clients/clientResponse"
     }
 
     @GetMapping("")

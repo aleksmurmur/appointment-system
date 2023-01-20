@@ -10,7 +10,7 @@
     <div th:insert="fragments/bodyHeader :: bodyHeader"></div>
 
 
-    <h2>Услуги</h2>
+    <h2>Клиенты</h2>
     <div>
 
 
@@ -18,7 +18,7 @@
                 <form th:action="@{${path}}" method="get">
 
                 <td style="width: 150px;">
-                    <input type="text" th:value="${name}" name="name" class="input-medium"/>
+                    <input type="text" th:value="${phone}" name="phone" class="input-medium"/>
                 </td>
                 <td style="width: 50px;">
                     <button type="submit" class="btn btn-medium">Поиск</button>
@@ -29,7 +29,7 @@
         </form>
                 <td >
                     <form method="get" th:action="@{|${path}/new|}">
-                    <button type="submit" class="btn btn-medium">Добавить услугу</button>
+                    <button type="submit" class="btn btn-medium">Добавить клиента</button>
                     </form>
                 </td>
 
@@ -40,31 +40,25 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th style="width: 150px;">Название</th>
-            <th style="width: 200px;">Описание</th>
-            <th>Цена</th>
-            <th>Длительность</th>
-            <th >Действие</th>
-            <th ></th>
+            <th style="width: 150px;">Телефон</th>
+            <th style="width: 200px;">Имя</th>
 
         </tr>
         </thead>
         <tbody>
-        <tr th:each="p : ${products}">
+        <tr th:each="c : ${clients}">
             <td>
-                <a href="productResponse.html"
-                   th:href="@{|${path}/${p.id}|}"
-                   th:text="|${p.name}|">Название услуги</a>
+                <a href="clientResponse.html"
+                   th:href="@{|${path}/${c.id}|}"
+                   th:text="|${c.phone}|">Телефон</a>
             </td>
-            <td th:text="${p.description}">Описание</td>
-            <td th:text="|${p.price} руб.|">Цена</td>
-            <td th:text="|${p.durationMinutes} мин.|">Длительность (минут)</td>
+            <td th:text="${c.name}">Имя</td>
             <td>
-                <a th:href="@{|${path}/${p.id}/edit|}"
+                <a th:href="@{|${path}/${c.id}/edit|}"
                    class="btn btn-info">Редактировать</a>
             </td>
             <td>
-                <form th:method="post" th:action="@{|${path}/${p.id}/delete|}">
+                <form th:method="post" th:action="@{|${path}/${c.id}/delete|}">
                     <button type="submit" class="btn btn-warning">Удалить</button>
                 </form>
             </td>
