@@ -9,8 +9,10 @@ import java.time.LocalTime
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.random.Random
 
-fun randomDuration() : Duration =
-    Duration.ofMinutes(Random.nextLong(30, 180))
+fun
+        randomDuration(min: Long = 30, max: Long = 180) : Duration =
+    if (max == 0L) Duration.ZERO
+    else Duration.ofMinutes(Random.nextLong(min, max))
 
 fun randomFutureDate() : LocalDate
 {
@@ -18,9 +20,10 @@ fun randomFutureDate() : LocalDate
     return LocalDate.ofEpochDay(randomDay)
 }
 
-fun randomLocalTime(from: Long = 0) : LocalTime
+fun randomLocalTime(from: LocalTime = LocalTime.MIN,
+                    to: LocalTime = LocalTime.MAX) : LocalTime
 {
-    val randomSec = Random.nextLong(from, LocalTime.MAX.toSecondOfDay().toLong())
+    val randomSec = Random.nextLong(from.toSecondOfDay().toLong(), to.toSecondOfDay().toLong())
     return LocalTime.ofSecondOfDay(randomSec)
 }
 

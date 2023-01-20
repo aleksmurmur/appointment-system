@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:insert="fragments/header :: header (value='Услуги')"></div>
+</head>
+<body>
+
+<div class="container">
+
+    <div th:insert="fragments/bodyHeader :: bodyHeader"></div>
+
+
+    <h2>Услуги</h2>
+    <div>
+
+
+            <table class="table table-striped">
+                <form th:action="@{${path}}" method="get">
+
+                <td style="width: 150px;">
+                    <input type="text" th:value="${name}" name="name" class="input-medium"/>
+                </td>
+                <td style="width: 50px;">
+                    <button type="submit" class="btn btn-medium">Поиск</button>
+                </td>
+                <td style="width: 50px;">
+                    <button type="submit" th:value="null" class="btn btn-medium">Все</button>
+                </td>.
+        </form>
+                <td >
+                    <form method="get" th:action="@{|${path}/new|}">
+                    <button type="submit" class="btn btn-medium">Добавить услугу</button>
+                    </form>
+                </td>
+
+            </table>
+
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th style="width: 150px;">Название</th>
+            <th style="width: 200px;">Описание</th>
+            <th>Цена</th>
+            <th>Длительность</th>
+            <th >Действие</th>
+            <th ></th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${products}">
+            <td>
+                <a href="productResponse.html"
+                   th:href="@{|${path}/${p.id}|}"
+                   th:text="|${p.name}|">Название услуги</a>
+            </td>
+            <td th:text="${p.description}">Описание</td>
+            <td th:text="|${p.price} руб.|">Цена</td>
+            <td th:text="|${p.durationMinutes} мин.|">Длительность (минут)</td>
+            <td>
+                <a th:href="@{|${path}/${p.id}/edit|}"
+                   class="btn btn-info">Редактировать</a>
+            </td>
+            <td>
+                <form th:method="post" th:action="@{|${path}/${p.id}/delete|}">
+                    <button type="submit" class="btn btn-warning">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div th:insert="fragments/footer"></div>
+</body>
+</html>

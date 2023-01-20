@@ -1,9 +1,8 @@
 package com.aleksmurmur.hairdresser.client.service
 
 import com.aleksmurmur.hairdresser.client.domain.Client
-import com.aleksmurmur.hairdresser.client.dto.ClientCreateRequest
+import com.aleksmurmur.hairdresser.client.dto.ClientCreateOrUpdateRequest
 import com.aleksmurmur.hairdresser.client.dto.ClientResponse
-import com.aleksmurmur.hairdresser.client.dto.ClientUpdateRequest
 import com.aleksmurmur.hairdresser.client.repository.ClientRepository
 import com.aleksmurmur.hairdresser.common.jpa.findByIdOrThrow
 import jakarta.annotation.security.RolesAllowed
@@ -42,14 +41,14 @@ class ClientService (
 
     @Transactional
     @RolesAllowed("admin.clients:write")
-    fun createClient(request: ClientCreateRequest): ClientResponse {
+    fun createClient(request: ClientCreateOrUpdateRequest): ClientResponse {
         return clientRepository.save(createEntity(request))
             .let {ClientResponse.Mapper.from(it)}
     }
 
     @Transactional
     @RolesAllowed("admin.clients:write")
-    fun update(id: UUID, request: ClientUpdateRequest): ClientResponse {
+    fun update(id: UUID, request: ClientCreateOrUpdateRequest): ClientResponse {
         val entity = getClient(id)
             .also { it.updateFromRequest(request) }
         return clientRepository.save(entity).let { ClientResponse.Mapper.from(it) }
@@ -66,15 +65,15 @@ class ClientService (
         clientRepository.findByIdOrThrow(id)
 
 
-    private fun createEntity(request: ClientCreateRequest) =
+    private fun createEntity(request: ClientCreateOrUpdateRequest) =
         Client(
             request.phone,
             request.name
         )
 
-    private fun Client.updateFromRequest(request: ClientUpdateRequest): Client {
-        request.phone?.let { phone = it }
-        request.name?.let { name = it }
+    private fun Client.updateFromRequest(request: ClientCreateOrUpdateRequest): Client {
+         phone = request.phone
+        name = request.name
         return this
     }
 }

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <div th:insert="fragments/header :: header (value='Расписание')"></div>
+</head>
+<body>
+
+<div class="container">
+
+    <div th:insert="fragments/bodyHeader :: bodyHeader"></div>
+
+
+    <h2>Расписание</h2>
+    <div>
+
+
+        <table class="table table-striped">
+            <form th:action="@{${path}}" method="get">
+
+                <td style="width: 150px;">
+                    <input type="date" th:value="${dateFrom}" name="dateFrom" class="input-medium"/>
+                </td>
+                <td style="width: 150px;">
+                    <input type="date" th:value="${dateTo}" name="dateTo" class="input-medium"/>
+                </td>
+                <td style="width: 50px;">
+                    <button type="submit" class="btn btn-medium">Поиск</button>
+                </td>
+
+            </form>
+            <td>
+                <form method="get" th:action="@{|${path}/new|}">
+                    <button type="submit" class="btn btn-medium">Добавить расписание на день</button>
+                </form>
+            </td>
+
+        </table>
+
+    </div>
+    <div th:if="${schedule != null}">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th style="width: 150px;">Дата</th>
+                <th style="width: 200px;">Рабочий день</th>
+                <th>Начало рабочего дня</th>
+                <th>Конец рабочего дня</th>
+                <th>Слоты</th>
+                <th>Действие</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="s : ${schedule}">
+                <td>
+                    <a
+                            th:href="@{|${path}/${s.date}|}"
+                            th:text="|${s.date}|">Дата</a>
+                </td>
+                <td th:text="${s.workingDay}">Рабочий день</td>
+                <td th:text="${s.timeFrom}">Начало рабочего дня</td>
+                <td th:text="${s.timeTo}">Конец рабочего дня</td>
+                <div th:each="t : ${s.timeslots}">
+                    <!--TODO очень криво отображается            <th>Слот</th>-->
+                    <td>
+                        <span th:if="${t.status == T(com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus).FREE}"
+                              th:text="|Свободно от ${t.timeFrom} до ${t.timeTo}|"></br></span>
+                        <span th:if="${t.status == T(com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus).BUSY}"
+                              th:text="|Запись от ${t.timeFrom} до ${t.timeTo}|"></br></span>
+                        <span th:if="${t.status == T(com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus).UNAVAILABLE}"
+                              th:text="|Перерыв от ${t.timeFrom} до ${t.timeTo}|"></br></span>
+
+                    </td>
+                </div>
+                <div th:if="${s.workingDay == false}">
+                    <td>
+                        <span th:text="Выходной"></br></span>
+                    </td>
+                </div>
+                <td>
+                    <a th:href="@{|${path}/${s.date}/edit|}"
+                       class="btn btn-info">Редактировать</a>
+                </td>
+                <td>
+                    <form th:method="post" th:action="@{|${path}/${s.date}/delete|}">
+                        <button type="submit" class="btn btn-warning">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:insert="fragments/footer"></div>
+</body>
+</html>

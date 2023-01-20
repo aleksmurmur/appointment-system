@@ -9,4 +9,6 @@ import java.util.UUID
 interface ProductRepository : JpaRepository<Product, UUID> {
 
     fun findByDeletedIsFalse() : List<Product>
+
+    fun findByNameContainsIgnoreCaseAndDeletedIsFalse(name: String) : List<Product>
 }

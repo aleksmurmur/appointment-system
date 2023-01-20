@@ -1,9 +1,8 @@
 package com.aleksmurmur.hairdresser.client.api
 
 import com.aleksmurmur.hairdresser.api.CLIENTS_PATH
-import com.aleksmurmur.hairdresser.client.dto.ClientCreateRequest
+import com.aleksmurmur.hairdresser.client.dto.ClientCreateOrUpdateRequest
 import com.aleksmurmur.hairdresser.client.dto.ClientResponse
-import com.aleksmurmur.hairdresser.client.dto.ClientUpdateRequest
 import com.aleksmurmur.hairdresser.client.service.ClientService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -26,13 +25,13 @@ class ClientController(
 ) {
 
     @PostMapping
-    fun createClient(@RequestBody @Valid request: ClientCreateRequest): ResponseEntity<ClientResponse> =
+    fun createClient(@RequestBody @Valid request: ClientCreateOrUpdateRequest): ResponseEntity<ClientResponse> =
         ResponseEntity.ok(clientService.createClient(request))
 
     @PatchMapping("/{id}")
     fun updateClient(
         @PathVariable id: UUID,
-        @RequestBody request: ClientUpdateRequest
+        @RequestBody request: ClientCreateOrUpdateRequest
     ): ResponseEntity<ClientResponse> =
         ResponseEntity.ok(clientService.update(id, request))
 

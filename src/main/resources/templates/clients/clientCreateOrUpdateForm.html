@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<head>
+    <div th:insert="~{fragments/header :: header (value='Создание и редактирование услуг')}"></div>
+</head>
+<body>
+
+<div class="container">
+
+    <div th:insert="~{fragments/bodyHeader :: bodyHeader}" ></div>
+
+    <h2>
+    <span th:if="${action} == 'create'">Новая </span> Услуга
+</h2>
+<form  th:object="${productForm}" th:method="post" th:action="${path}" class="form-horizontal" id="add-product-form">
+    <div class="control-group"  th:classappend="${#fields.hasErrors('name')} ? error">
+
+        <label class="control-label">Название услуги</label>
+        <div class="controls">
+            <input type="text" th:field="*{name}"  />
+            <span class="help-inline" th:errors="*{name}">[error]</span>
+        </div>
+    </div>
+
+    <div class="control-group" th:classappend="${#fields.hasErrors('description')} ? error">
+        <label class="control-label">Описание</label>
+        <div class="controls">
+            <input type="text" th:field="*{description}" />
+            <span class="help-inline" th:errors="*{description}">[error]</span>
+        </div>
+    </div>
+
+    <div class="control-group" th:classappend="${#fields.hasErrors('price')} ? error">
+        <label class="control-label">Цена (руб.)</label>
+        <div class="controls">
+            <input type="number" th:field="*{price}" />
+            <span class="help-inline" th:errors="*{price}">[error]</span>
+        </div>
+    </div>
+
+    <div class="control-group" th:classappend="${#fields.hasErrors('durationMinutes')} ? error">
+        <label class="control-label">Длительность (мин.)</label>
+        <div class="controls">
+            <input type="number" th:field="*{durationMinutes}" />
+            <span class="help-inline" th:errors="*{durationMinutes}">[error]</span>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button th:if="${action}=='create'" type="submit" class="btn btn-success">Создать услугу</button>
+        <button th:if="${action}=='update'" type="submit" class="btn btn-success">Обновить услугу</button>
+
+    </div>
+</form>
+</div>
+
+<div th:insert="fragments/footer"></div>
+
+</body>
+</html>

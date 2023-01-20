@@ -2,7 +2,7 @@ app:
   service:
     shortest:  30
 server:
-  port: 8081
+  port: 8082
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
@@ -16,3 +16,7 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     show-sql: true
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:insert="fragments/header :: header (value='Информация об услуге')">
+    </div>
+</head>
+<body>
+
+
+<div class="container">
+
+    <div th:insert="fragments/bodyHeader :: bodyHeader"></div>
+
+    <h2>Информация об услуге</h2>
+
+    <table class="table table-striped" style="width:600px;">
+
+        <tr>
+            <th>Название</th>
+            <td><b th:text="${productResponse.name}">[name]</b></td>
+        </tr>
+        <tr>
+            <th>Описание</th>
+            <td th:text="${productResponse.description}">[description]</td>
+        </tr>
+        <tr>
+            <th>Цена</th>
+            <td th:text="|${productResponse.price} руб.|">[price]</td>
+        </tr>
+        <tr>
+            <th>Длительность</th>
+            <td th:text="|${productResponse.durationMinutes} мин.|">[duration]</td>
+        </tr>
+        <tr>
+            <td>
+                <a th:href="@{|${productResponse.id}/edit|}" href="./createOrUpdateProductForm.html"
+                   class="btn btn-info">Редактировать</a></td>
+            <td>
+                <form th:method="post" th:action="@{|${productResponse.id}/delete|}">
+                    <button type="submit" class="btn btn-warning">Удалить</button>
+                </form>
+            </td>
+
+        </tr>
+    </table>
+
+</div>
+
+<div th:insert="fragments/footer"></div>
+
+</body>
+</html>
