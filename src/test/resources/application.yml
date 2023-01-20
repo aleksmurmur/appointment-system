@@ -1,6 +1,5 @@
-app:
-  service:
-    shortest:  30
+
+
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver

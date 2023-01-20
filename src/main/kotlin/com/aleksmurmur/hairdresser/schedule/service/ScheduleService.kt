@@ -157,8 +157,8 @@ class ScheduleService(
 
     private fun DaySchedule.mapToDto() = DayScheduleResponse(
         date = this.persistentId,
-        workingTimeFrom = this.workingTimeFrom,
-        workingTimeTo = this.workingTimeTo,
+        timeFrom = this.workingTimeFrom,
+        timeTo = this.workingTimeTo,
         timeslots = addTimeslots(this),
         workingDay = this.workingDay
     )
@@ -166,7 +166,7 @@ class ScheduleService(
     private fun addTimeslots(schedule: DaySchedule): MutableList<TimeslotResponse> {
         if (!schedule.workingDay) return mutableListOf()
 
-        val bookedTimeslots = schedule.bookedTimeslots.filter { it.timeslotStatus == TimeslotStatus.BUSY }
+        val bookedTimeslots = schedule.bookedTimeslots.filter { it.timeslotStatus != TimeslotStatus.FREE }
 
         if (bookedTimeslots.isEmpty()) return mutableListOf(
             TimeslotResponse(
@@ -177,7 +177,6 @@ class ScheduleService(
         )
 
         return bookedTimeslots
-            .filter { it.timeslotStatus == TimeslotStatus.BUSY }
             .sortedBy { it.timeFrom }
             .addFreeTimeslots(schedule.workingTimeFrom!!, schedule.workingTimeTo!!)
 

@@ -3,7 +3,6 @@ package com.aleksmurmur.hairdresser.product.api
 import com.aleksmurmur.hairdresser.api.PRODUCTS_PATH
 import com.aleksmurmur.hairdresser.product.dto.ProductCreateRequest
 import com.aleksmurmur.hairdresser.product.dto.ProductResponse
-import com.aleksmurmur.hairdresser.product.dto.ProductUpdateRequest
 import com.aleksmurmur.hairdresser.product.service.ProductService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -17,8 +16,9 @@ class ProductController (
         ){
 
     @GetMapping
-    fun getAll() : ResponseEntity<List<ProductResponse>> =
-        ResponseEntity.ok(productService.getAll())
+    fun getList(@RequestParam(required = false) name: String?) : ResponseEntity<List<ProductResponse>> =
+        if (name == null) ResponseEntity.ok(productService.getAll())
+    else ResponseEntity.ok(productService.getByNameLike(name))
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: UUID) : ResponseEntity<ProductResponse> =
@@ -29,7 +29,7 @@ class ProductController (
         ResponseEntity.ok(productService.createProduct(request))
 
     @PatchMapping("/{id}")
-    fun updateProduct(@PathVariable id: UUID, @RequestBody @Valid request: ProductUpdateRequest) : ResponseEntity<ProductResponse> =
+    fun updateProduct(@PathVariable id: UUID, @RequestBody @Valid request: ProductCreateRequest) : ResponseEntity<ProductResponse> =
         ResponseEntity.ok(productService.updateProduct(id, request))
 
     @DeleteMapping("/{id}")

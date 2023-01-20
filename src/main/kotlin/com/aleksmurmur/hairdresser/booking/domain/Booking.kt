@@ -15,12 +15,11 @@ import java.time.LocalTime
 @Entity
 @Table(name = "bookings")
 class Booking(
-    override var timeFrom: LocalTime,
-    override var duration: Duration,
-    //override var timeTo: LocalTime,
-    @ManyToOne
-    override var daySchedule: DaySchedule,
-    override var timeslotStatus : TimeslotStatus = TimeslotStatus.BUSY,
+     timeFrom: LocalTime,
+     duration: Duration,
+//    @ManyToOne
+     daySchedule: DaySchedule,
+     timeslotStatus : TimeslotStatus = TimeslotStatus.BUSY,
     var bookingStatus: BookingStatus = BookingStatus.BOOKED,
     @ManyToOne
     var client: Client,

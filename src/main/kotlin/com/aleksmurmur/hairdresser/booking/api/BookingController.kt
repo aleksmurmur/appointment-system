@@ -31,8 +31,8 @@ class BookingController(
     fun getBooking(@PathVariable id: UUID): ResponseEntity<BookingResponse> =
         ResponseEntity.ok(bookingService.getById(id))
 
-    @GetMapping
-    fun getAllByClient(@RequestParam id: UUID) : ResponseEntity<List<BookingResponse>> =
+    @GetMapping("/clients/{id}")
+    fun getAllByClient(@PathVariable id: UUID) : ResponseEntity<List<BookingResponse>> =
         bookingService.getAllByClient(id)
             .let {
                 ResponseEntity.ok(it)

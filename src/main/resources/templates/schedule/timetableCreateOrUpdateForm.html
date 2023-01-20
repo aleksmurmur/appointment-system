@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<head>
+    <div th:insert="~{fragments/header :: header (value='Создание и редактирование расписания')}"></div>
+</head>
+<body>
+
+<div class="container">
+
+    <div th:insert="~{fragments/bodyHeader :: bodyHeader}" ></div>
+
+    <h2>
+        <span th:if="${action} == 'create'">Новое </span> Расписание на день
+    </h2>
+    <form  th:object="${timetableForm}" th:method="post" th:action="${path}" class="form-horizontal" >
+        <div class="control-group"  th:classappend="${#fields.hasErrors('dateFrom')} ? error">
+
+            <label class="control-label">Начальная дата</label>
+            <div class="controls">
+                <input type="date" th:field="*{dateFrom}"  />
+                <span class="help-inline" th:errors="*{dateFrom}">[error]</span>
+            </div>
+        </div>
+        <div class="control-group"  th:classappend="${#fields.hasErrors('dateTo')} ? error">
+
+            <label class="control-label">Конечная дата</label>
+            <div class="controls">
+                <input type="date" th:field="*{dateTo}"  />
+                <span class="help-inline" th:errors="*{dateTo}">[error]</span>
+            </div>
+        </div>
+        <div th:each="s : *{workingSchedule}">
+            <div th:text="*{key}"></br></div>
+            <div class="control-group" th:classappend="${#fields.hasErrors('workingDay')} ? error">
+                <label class="control-label">Рабочий день</label>
+                <div class="controls">
+                    <input type="checkbox" th:field="*{value.workingDay}" id="workingDay" />
+                    <span class="help-inline" th:errors="*{value.workingDay}">[error]</span>
+                </div>
+            </div>
+
+            <div class="control-group" th:classappend="${#fields.hasErrors('timeFrom')} ? error">
+                <label class="control-label">Начало рабочего дня</label>
+                <div class="controls">
+                    <input type="time" th:field="*{timeFrom}" />
+                    <span class="help-inline" th:errors="*{timeFrom}">[error]</span>
+                </div>
+            </div>
+
+            <div class="control-group" th:classappend="${#fields.hasErrors('timeTo')} ? error">
+                <label class="control-label">Конец рабочего дня</label>
+                <div class="controls">
+                    <input type="time" th:field="*{timeTo}" />
+                    <span class="help-inline" th:errors="*{timeTo}">[error]</span>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+
+        <div class="form-actions">
+            <button th:if="${action}=='create'" type="submit" class="btn btn-success">Создать расписание на день</button>
+            <button th:if="${action}=='update'" type="submit" class="btn btn-success">Обновить расписание на день</button>
+
+        </div>
+    </form>
+</div>
+
+<div th:insert="fragments/footer"></div>
+
+</body>
+</html>

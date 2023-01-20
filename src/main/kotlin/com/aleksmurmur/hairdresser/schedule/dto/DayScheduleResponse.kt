@@ -7,8 +7,8 @@ import java.time.LocalTime
 
 class DayScheduleResponse (
     val date: LocalDate,
-    val workingTimeFrom: LocalTime?,
-    val workingTimeTo: LocalTime?,
+    val timeFrom: LocalTime?,
+    val timeTo: LocalTime?,
     var timeslots: MutableList<TimeslotResponse> = mutableListOf(),
     val workingDay: Boolean
 

@@ -57,8 +57,8 @@ class ScheduleApiTests : Context() {
                 .run {
                     assertEquals(daySchedule1.persistentId, date)
                     assertEquals(daySchedule1.workingDay, workingDay)
-                    assertEquals(daySchedule1.workingTimeFrom, workingTimeFrom)
-                    assertEquals(daySchedule1.workingTimeTo, workingTimeTo)
+                    assertEquals(daySchedule1.workingTimeFrom, timeFrom)
+                    assertEquals(daySchedule1.workingTimeTo, timeTo)
                     assertEquals(1, timeslots.size)
                 }
         }
@@ -83,7 +83,7 @@ class ScheduleApiTests : Context() {
                 .response(mapper, object : TypeReference<List<DayScheduleResponse>>() {})
                 .run {
                     assertEquals(1, size)
-                    assertEquals(daySchedule1.workingTimeFrom, first().workingTimeFrom)
+                    assertEquals(daySchedule1.workingTimeFrom, first().timeFrom)
                 }
         }
 
@@ -135,8 +135,8 @@ class ScheduleApiTests : Context() {
                 .response<DayScheduleResponse>(mapper)
                 .run {
                     assertEquals(request.date, date)
-                    assertEquals(request.timeFrom, workingTimeFrom)
-                    assertEquals(request.timeTo, workingTimeTo)
+                    assertEquals(request.timeFrom, timeFrom)
+                    assertEquals(request.timeTo, timeTo)
                     assertEquals(request.workingDay, workingDay)
                 }
         }
@@ -168,11 +168,11 @@ class ScheduleApiTests : Context() {
                     assertEquals(request.dateTo.toEpochDay() - request.dateFrom.toEpochDay(), size.toLong())
                     assertEquals(
                         request.workingSchedule[DayOfWeek.MONDAY]!!.timeFrom,
-                        first { it.date.dayOfWeek == DayOfWeek.MONDAY }.workingTimeFrom
+                        first { it.date.dayOfWeek == DayOfWeek.MONDAY }.timeFrom
                     )
                     assertEquals(
                         request.workingSchedule[DayOfWeek.MONDAY]!!.timeTo,
-                        first { it.date.dayOfWeek == DayOfWeek.MONDAY }.workingTimeTo
+                        first { it.date.dayOfWeek == DayOfWeek.MONDAY }.timeTo
                     )
                     assertEquals(
                         request.workingSchedule[DayOfWeek.MONDAY]!!.workingDay,
@@ -205,8 +205,8 @@ class ScheduleApiTests : Context() {
                 .response<DayScheduleResponse>(mapper)
                 .run {
                     assertEquals(request.date, date)
-                    assertEquals(request.timeFrom, workingTimeFrom)
-                    assertEquals(request.timeTo, workingTimeTo)
+                    assertEquals(request.timeFrom, timeFrom)
+                    assertEquals(request.timeTo, timeTo)
                     assertEquals(request.workingDay, workingDay)
                 }
         }
@@ -265,8 +265,8 @@ class ScheduleApiTests : Context() {
                 .andExpect { status { isOk() } }
                 .response<DayScheduleResponse>(mapper)
                 .run {
-                    assertEquals(request.timeFrom, workingTimeFrom)
-                    assertEquals(request.timeTo, workingTimeTo)
+                    assertEquals(request.timeFrom, timeFrom)
+                    assertEquals(request.timeTo, timeTo)
                     assertEquals(1, timeslots.filter { it.status == TimeslotStatus.BUSY }.size)
                 }
         }
