@@ -32,12 +32,20 @@
                 <li style="width: 100px;"><a th:href="@{/}"><i class="icon-home"></i>Домой</a></li>
                 <li style="width: 130px;"><a th:href="@{/view/products}"><i class="icon-search"></i>Услуги</a></li>
                 <li style="width: 130px;"><a th:href="@{/view/schedule}"><i class="icon-search"></i>Расписание</a></li>
+                <li style="width: 130px;"><a th:href="@{/view/clients}"><i class="icon-search"></i>Клиенты</a></li>
                 <!--            <li style="width: 140px;"><a href="../vets/vetList.html" th:href="@{/vets.html}"><i class="icon-th-list"></i>Veterinarians</a></li>-->
                 <!--            <li style="width: 90px;"><a href="../exception.html" th:href="@{/oups.html}" title="trigger a RuntimeException to see how it is handled"><i class="icon-warning-sign"></i>Error</a></li>-->
                 <!--            <li style="width: 80px;"><a href="#" title="not available yet. Work in progress!!"><i class=" icon-question-sign"></i>Help</a></li>-->
             </ul>
         </div>
     </div>
+</div>
+
+
+<div th:fragment="applyButton (value)" class="form-actions">
+    <button th:if="${action}=='create'" type="submit" class="btn btn-success">Создать <span th:text="${value}"></span></button>
+    <button th:if="${action}=='update'" type="submit" class="btn btn-success">Обновить <span th:text="${value}"></span></button>
+    <button th:if="${action}==null" type="submit" class="btn btn-success">Подтвердить</button>
 </div>
 
 	

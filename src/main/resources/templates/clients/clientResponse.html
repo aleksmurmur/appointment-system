@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:insert="fragments/header :: header (value='Информация о клиенте')">
+    </div>
+</head>
+<body>
+
+
+<div class="container">
+
+    <div th:insert="fragments/bodyHeader :: bodyHeader"></div>
+
+    <h2>Информация о клиенте</h2>
+
+    <table class="table table-striped" style="width:600px;">
+
+        <tr>
+            <th>Телефон</th>
+            <td><b th:text="${clientResponse.phone}">[phone]</b></td>
+        </tr>
+        <tr>
+            <th>Имя</th>
+            <td th:text="${clientResponse.name}">[name]</td>
+        </tr>
+
+        <tr>
+            <td>
+                <a th:href="@{|${clientResponse.id}/edit|}" href="clientCreateOrUpdateForm.html"
+                   class="btn btn-info">Редактировать</a></td>
+            <td>
+                <form th:method="post" th:action="@{|${clientResponse.id}/delete|}">
+                    <button type="submit" class="btn btn-warning">Удалить</button>
+                </form>
+            </td>
+
+        </tr>
+    </table>
+
+</div>
+
+<div th:insert="fragments/footer"></div>
+
+</body>
+</html>
