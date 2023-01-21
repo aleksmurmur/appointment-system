@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:insert="fragments/header :: header (value='Бронирования')"></div>
+</head>
+<body>
+
+<div class="container">
+
+    <div th:insert="fragments/bodyHeader :: bodyHeader"></div>
+
+
+    <h2>Бронирования</h2>
+    <div>
+
+
+        <table class="table table-striped" style="width: 801px;">
+            <form th:action="@{${path}}" method="get">
+
+                <td style="width: 150px;">
+                    <select th:value="${clientId}" name="clientId">
+                        <option  th:value="null"
+                                 th:text="Все"></option>
+                        <option th:each="c : ${clients}"
+                                th:value="${c.id}"
+                                th:text="|${c.name} ${c.phone}|">
+                        </option>
+                    </select>
+                </td>
+                <td style="width: 50px;">
+                    <button type="submit" class="btn btn-medium">Поиск</button>
+                </td>
+
+            </form>
+            <td>
+                <form method="get" th:action="@{|${path}/new|}">
+                    <button type="submit" class="btn btn-medium">Добавить бронирование</button>
+                </form>
+            </td>
+
+        </table>
+
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Дата</th>
+
+            <th>Время</th>
+            <th>Продолжительность</th>
+            <th>Имя клиента</th>
+            <th>Телефон клиента</th>
+            <th>Услуги</th>
+            <th> Действие</th>
+
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="b : ${bookings}">
+            <td>
+                <a href="bookingResponse.html"
+                   th:href="@{|${schedulePath}/${b.date}|}"
+                   th:text="${#temporals.format(b.date, 'dd MMM yyyy')}">Дата</a>
+            </td>
+            <td >
+                <a href="bookingResponse.html"
+                   th:href="@{|${path}/${b.id}|}"
+                   th:text="|${b.timeFrom}|">Время</a></td>
+            <td th:with="hours=${(b.duration) / ( 60)},
+            minutes=${(b.duration - (hours * 60))},
+                        hoursText=${hours &gt; 0? hours + ' ч. ' :''},
+                        minutesText=${minutes &gt; 0? minutes + ' мин. ' :''}"
+                    th:text="${hoursText} + ${minutesText}">Продолжительность</td>
+            <td th:text="${b.client.name}">Имя клиента</td>
+            <td th:text="${b.client.phone}">Телефон клиента</td>
+            <td>
+                <ul style="margin-left: 0px">
+                    <li th:each="p : ${b.products}" th:text="|*{p.name } |"></li>
+                </ul>
+            </td>
+            <td>
+                <a th:href="@{|${path}/${b.id}/edit|}"
+                   class="btn btn-info">Редактировать</a>
+            </td>
+            <td>
+                <form th:method="post" th:action="@{|${path}/${b.id}/cancel|}">
+                    <button type="submit" class="btn btn-warning">Отменить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+
+<div th:insert="fragments/footer"></div>
+</body>
+</html>

@@ -41,8 +41,23 @@ class BookingService(
 
     @Transactional(readOnly = true)
     @RolesAllowed("admin.bookings:read")
+    fun getAllActiveByClient(clientId: UUID): List<BookingResponse> =
+        bookingRepository.findByClientAndBookingStatusEquals(clientRepository.findByIdOrThrow(clientId), BookingStatus.BOOKED)
+            .sortedWith(compareBy({it.timeFrom}, {it.daySchedule.persistentId}))
+            .map { BookingResponse.Mapper.from(it) }
+
+    @Transactional(readOnly = true)
+    @RolesAllowed("admin.bookings:read")
     fun getAllByClient(clientId: UUID): List<BookingResponse> =
         bookingRepository.findByClient(clientRepository.findByIdOrThrow(clientId))
+            .sortedWith(compareBy({it.timeFrom}, {it.daySchedule.persistentId}))
+            .map { BookingResponse.Mapper.from(it) }
+
+    @Transactional(readOnly = true)
+    @RolesAllowed("admin.bookings:read")
+    fun getAllActive(): List<BookingResponse> =
+        bookingRepository.findAllByBookingStatusEquals()
+            .sortedWith(compareBy({it.timeFrom}, {it.daySchedule.persistentId}))
             .map { BookingResponse.Mapper.from(it) }
 
     @Transactional
@@ -131,7 +146,8 @@ class BookingService(
             .filter { it.timeslotStatus != TimeslotStatus.FREE }
             .filter { it.persistentId != currentBooking }
             .forEach {
-                if (timeFrom < it.timeFrom.plus(duration) && timeFrom.plus(duration) > it.timeFrom) throw UnavailableActionException(
+                if (timeFrom < it.timeFrom.plus(it.duration) && timeFrom.plus(duration) > it.timeFrom)
+                     throw UnavailableActionException(
                     "Недостаточно свободных слотов для записи, выберите другое время"
                 )
             }

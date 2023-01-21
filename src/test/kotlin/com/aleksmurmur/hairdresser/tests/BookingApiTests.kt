@@ -1,6 +1,6 @@
 package com.aleksmurmur.hairdresser.tests
 
-import com.aleksmurmur.hairdresser.api.BOOKING_PATH
+import com.aleksmurmur.hairdresser.api.BOOKINGS_PATH
 import com.aleksmurmur.hairdresser.api.TIMESLOTS_PATH
 import com.aleksmurmur.hairdresser.booking.domain.Booking
 import com.aleksmurmur.hairdresser.booking.domain.BookingStatus
@@ -119,7 +119,7 @@ class BookingApiTests : Context() {
 
 
         private fun getBooking(id: UUID) =
-            testClient.get("$BOOKING_PATH/$id")
+            testClient.get("$BOOKINGS_PATH/$id")
     }
 
     @Nested
@@ -144,7 +144,7 @@ class BookingApiTests : Context() {
         }
 
         private fun getClientBookings(clientId: UUID) =
-            testClient.get("$BOOKING_PATH/clients/$clientId")
+            testClient.get("$BOOKINGS_PATH/clients/$clientId")
     }
 
     @Nested
@@ -278,7 +278,7 @@ class BookingApiTests : Context() {
         }
 
         private fun createBooking(request: BookingCreateRequest) =
-            testClient.post(BOOKING_PATH) {
+            testClient.post(BOOKINGS_PATH) {
                 content = mapper.writeValueAsString(request)
                 contentType = MediaType.APPLICATION_JSON
             }
@@ -312,9 +312,9 @@ class BookingApiTests : Context() {
 
 
         private fun cancelBooking(id: UUID) =
-            testClient.delete("$BOOKING_PATH/$id")
+            testClient.delete("$BOOKINGS_PATH/$id")
         private fun getBookingById(id: UUID) =
-            testClient.get("$BOOKING_PATH/$id")
+            testClient.get("$BOOKINGS_PATH/$id")
         private fun getTimeslotById(id: UUID) =
             testClient.get("$TIMESLOTS_PATH/$id")
 
@@ -397,7 +397,7 @@ class BookingApiTests : Context() {
 
 
         private fun updateBooking(id: UUID, request: BookingTimeAndProductsUpdateRequest) =
-            testClient.patch("$BOOKING_PATH/$id") {
+            testClient.patch("$BOOKINGS_PATH/$id") {
                 content = mapper.writeValueAsString(request)
                 contentType = MediaType.APPLICATION_JSON
             }

@@ -29,7 +29,7 @@
         </tr>
         <tr>
             <th>Длительность</th>
-            <td th:text="|${productResponse.durationMinutes} мин.|">[duration]</td>
+            <td th:replace="fragments/bodyHeader :: duration (duration = ${productResponse.durationMinutes})"></td>
         </tr>
         <tr>
             <td>
