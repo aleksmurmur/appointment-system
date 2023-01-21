@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:insert="~{fragments/header :: header (value='Создание и редактирование бронирований')}"></div>
+</head>
+<body>
+
+<div class="container">
+
+    <div th:insert="~{fragments/bodyHeader :: bodyHeader}" ></div>
+
+    <h2>
+        <span th:if="${action} == 'create'">Новое </span> Бронирование
+    </h2>
+    <form  th:object="${bookingUpdateForm}" th:method="post" th:action="${path}" class="form-horizontal" id="add-booking-form">
+
+        <div class="control-group"  >
+            <label class="control-label">Выбрать время:</label>
+            <div class="controls" >
+                <input type="time" th:field="*{timeFrom}" />
+
+            </div>
+        </div>
+
+        <div class="control-group"  >
+            <label class="control-label">Выбрать услуги:</label>
+            <div class="controls">
+                <select class="form-control" th:field="*{products}" th:multiple="multiple">
+                    <option th:each="p : ${products}"
+                            th:value="${p.id}"
+                            th:text="${p.name}">Название услуги</option>
+                </select>
+            </div>
+        </div>
+
+        <div th:insert="~{fragments/bodyHeader :: applyButton (value='бронирование')}" ></div>
+    </form>
+</div>
+
+<div th:insert="fragments/footer"></div>
+
+</body>
+</html>

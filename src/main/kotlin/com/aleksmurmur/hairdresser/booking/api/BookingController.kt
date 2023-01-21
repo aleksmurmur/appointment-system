@@ -1,6 +1,6 @@
 package com.aleksmurmur.hairdresser.booking.api
 
-import com.aleksmurmur.hairdresser.api.BOOKING_PATH
+import com.aleksmurmur.hairdresser.api.BOOKINGS_PATH
 import com.aleksmurmur.hairdresser.booking.dto.BookingCreateRequest
 import com.aleksmurmur.hairdresser.booking.dto.BookingResponse
 import com.aleksmurmur.hairdresser.booking.dto.BookingTimeAndProductsUpdateRequest
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
-@RequestMapping(BOOKING_PATH)
+@RequestMapping(BOOKINGS_PATH)
 class BookingController(
     private val bookingService: BookingService
         ){
@@ -33,7 +33,7 @@ class BookingController(
 
     @GetMapping("/clients/{id}")
     fun getAllByClient(@PathVariable id: UUID) : ResponseEntity<List<BookingResponse>> =
-        bookingService.getAllByClient(id)
+        bookingService.getAllActiveByClient(id)
             .let {
                 ResponseEntity.ok(it)
             }

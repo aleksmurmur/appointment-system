@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:insert="fragments/header :: header (value='Информация о бронировании')">
+    </div>
+</head>
+<body>
+
+
+<div class="container">
+
+    <div th:insert="fragments/bodyHeader :: bodyHeader"></div>
+
+    <h2>Информация о бронировании</h2>
+
+    <table class="table table-striped" style="width:600px;">
+
+        <tr>
+            <th>Дата</th>
+            <td><b th:text="${#temporals.format(bookingResponse.date, 'dd MMM yyyy')}">[date]</b></td>
+        </tr>
+        <tr>
+            <th>Время</th>
+            <td th:text="${bookingResponse.timeFrom}">[timeFrom]</td>
+        </tr>
+        <tr>
+            <th>Продолжительность</th>
+            <td th:with="hours=${(bookingResponse.duration) / ( 60)},
+                         minutes=${(bookingResponse.duration - (hours * 60))},
+                         hoursText=${hours &gt; 0? hours + ' ч. ' :''},
+                         minutesText=${minutes &gt; 0? minutes + ' мин. ' :''}"
+                th:text="${hoursText} + ${minutesText}">[duration]
+            </td>
+        </tr>
+        <tr>
+            <th>Статус</th>
+            <td th:switch="${bookingResponse.status}">
+                <span th:case="${T(com.aleksmurmur.hairdresser.booking.domain.BookingStatus).BOOKED}" th:text="Забронировано">[status]</span>
+            <span th:case="${T(com.aleksmurmur.hairdresser.booking.domain.BookingStatus).CANCELLED}" th:text="Отменено">[status]</span>
+                <span th:case="${T(com.aleksmurmur.hairdresser.booking.domain.BookingStatus).COMPLETED}" th:text="Выполнено">[status]</span>
+                </td>
+        </tr>
+        <tr>
+            <th>Клиент</th>
+            <td>
+                <p th:text="${bookingResponse.client.name}"></p>
+                <p th:text="${bookingResponse.client.phone}">[clientPhone]</p>
+            </td>
+        </tr>
+        <div th:each="p : ${bookingResponse.products}">
+            <tr>
+                <th>Услуга</th>
+                <td><b th:text="${p.name}">[name]</b></td>
+            </tr>
+            <tr>
+                <th>Цена</th>
+                <td th:text="|${p.price} руб.|">[price]</td>
+            </tr>
+
+        </div>
+        <tr>
+            <td>
+                <a th:href="@{|${bookingResponse.id}/edit|}" href="bookingCreateForm.html"
+                   class="btn btn-info">Редактировать</a></td>
+            <td>
+                <form th:method="post" th:action="@{|${bookingResponse.id}/cancel|}">
+                    <button type="submit" class="btn btn-warning">Отменить</button>
+                </form>
+            </td>
+
+        </tr>
+    </table>
+
+</div>
+
+<div th:insert="fragments/footer"></div>
+
+</body>
+</html>

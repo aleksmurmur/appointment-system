@@ -58,7 +58,7 @@
             </td>
             <td th:text="${p.description}">Описание</td>
             <td th:text="|${p.price} руб.|">Цена</td>
-            <td th:text="|${p.durationMinutes} мин.|">Длительность (минут)</td>
+            <td th:replace="fragments/bodyHeader :: duration (duration = ${p.durationMinutes})">Длительность (минут)</td>
             <td>
                 <a th:href="@{|${path}/${p.id}/edit|}"
                    class="btn btn-info">Редактировать</a>

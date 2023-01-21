@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <div th:insert="fragments/header :: header (value='Информация о расписании на день')">
     </div>
@@ -17,11 +17,11 @@
 
         <tr>
             <th>Дата</th>
-            <td><b th:text="*{date}">[date]</b></td>
+            <td><b th:text="*{#temporals.format(date, 'dd MMM yyyy')}">[date]</b></td>
         </tr>
         <tr>
             <th>Рабочий день</th>
-            <td th:text="*{workingDay}">[workingDay]</td>
+            <td th:text="*{workingDay}? 'Да' :'Нет'">[workingDay]</td>
         </tr>
         <tr th:if="*{workingDay}">
             <th>Начало рабочего дня</th>
@@ -31,16 +31,26 @@
             <th>Конец рабочего дня</th>
             <td th:text="*{timeTo}">[timeTo]</td>
         </tr>
-        <div th:each="t : *{timeslots}" >
-            <tr>
-                <th>Слот</th>
-            <td th:if="${t.status == T(com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus).FREE}" th:text="|Свободно от ${t.timeFrom} до ${t.timeTo}|"></td>
-                <td th:if="${t.status == T(com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus).BUSY}" th:text="|Запись от ${t.timeFrom} до ${t.timeTo}|"></td>
-                <td th:if="${t.status == T(com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus).UNAVAILABLE}" th:text="|Перерыв от ${t.timeFrom} до ${t.timeTo}|"></td>
 
-            </tr>
+        <tr th:if="*{workingDay}">
+            <th>Слоты</th>
+            <td>
+                <ul  style="margin-left: 0px">
+                    <li th:each="t : *{timeslots}">
+                    <p
+                        th:if="${t.status == T(com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus).FREE}"
+                        th:text="|Свободно от ${t.timeFrom} до ${t.timeTo}|"></p>
+                    <p
+                        th:if="${t.status == T(com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus).BUSY}"
+                        th:text="|Запись от ${t.timeFrom} до ${t.timeTo}|"></p>
+                    <p
+                        th:if="${t.status == T(com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus).UNAVAILABLE}"
+                        th:text="|Перерыв от ${t.timeFrom} до ${t.timeTo}|"></p>
+                    </li>
+                </ul>
+            </td>
+        </tr>
 
-        </div>
 
         <tr>
             <td>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:insert="~{fragments/header :: header (value='Создание и редактирование бронирований')}"></div>
+</head>
+<body>
+
+<div class="container">
+
+    <div th:insert="~{fragments/bodyHeader :: bodyHeader}" ></div>
+
+    <h2>
+    <span th:if="${action} == 'create'">Новое </span> Бронирование
+</h2>
+<form  th:object="${bookingForm}" th:method="post" th:action="${path}" class="form-horizontal" id="add-booking-form">
+
+
+    <div class="control-group"  >
+        <label class="control-label">Выбрать дату:</label>
+        <div class="controls" >
+            <select th:value="*{date}" name="date" >
+                <option th:each="s : ${schedule}"
+                        th:if="${s.workingDay == true}"
+                        th:value="${s.date}"
+                        th:text="${#temporals.format(s.date, 'dd MMM yyyy')}">
+                </option>
+            </select>
+
+        </div>
+    </div>
+
+    <div class="control-group"  >
+        <label class="control-label">Выбрать время:</label>
+        <div class="controls" >
+                <input type="time" th:field="*{timeFrom}" />
+
+        </div>
+    </div>
+
+    <div class="control-group"  >
+        <label class="control-label">Выбрать клиента:</label>
+        <div class="controls">
+            <select th:value="*{clientId}" name="clientId">
+                <option th:each="c : ${clients}"
+                        th:value="${c.id}"
+                        th:text="|${c.name} ${c.phone}|">
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <div class="control-group"  >
+        <label class="control-label">Выбрать услуги:</label>
+        <div class="controls">
+    <select class="form-control" th:field="*{products}" multiple="multiple">
+        <option th:each="p : ${products}"
+                th:field="*{products}"
+                th:value="${p.id}"
+                th:text="${p.name}">Название услуги</option>
+    </select>
+        </div>
+    </div>
+
+    <div th:insert="~{fragments/bodyHeader :: applyButton (value='бронирование')}" ></div>
+</form>
+</div>
+
+<div th:insert="fragments/footer"></div>
+
+</body>
+</html>
