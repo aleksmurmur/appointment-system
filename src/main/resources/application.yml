@@ -1,6 +1,7 @@
 app:
   service:
     shortest:  30
+    interval: 30
 server:
   port: 8082
 spring:

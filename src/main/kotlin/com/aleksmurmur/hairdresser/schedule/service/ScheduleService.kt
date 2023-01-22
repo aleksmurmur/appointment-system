@@ -10,6 +10,7 @@ import com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus
 import com.aleksmurmur.hairdresser.schedule.dto.DayScheduleCreateOrUpdateRequest
 import com.aleksmurmur.hairdresser.schedule.dto.DayScheduleResponse
 import com.aleksmurmur.hairdresser.booking.dto.TimeslotResponse
+import com.aleksmurmur.hairdresser.product.repository.ProductRepository
 import com.aleksmurmur.hairdresser.schedule.dto.TimetableCreateRequest
 import com.aleksmurmur.hairdresser.schedule.repository.ScheduleRepository
 import jakarta.annotation.security.RolesAllowed
@@ -20,12 +21,15 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 @Service
 class ScheduleService(
     val scheduleRepository: ScheduleRepository,
-    @Value("\${app.service.shortest}") val comparator: Long
+    val productRepository: ProductRepository,
+    @Value("\${app.service.shortest}") val comparator: Long,
+    @Value("\${app.service.interval}") val interval: Long,
 ) {
 
     @Transactional(readOnly = true)
@@ -44,6 +48,67 @@ class ScheduleService(
         scheduleRepository.findByIdGreaterThanEqualAndIdLessThanEqual(dateFrom, dateTo)
             .sortedBy { it.persistentId }
             .map { it.mapToDto() }
+
+    @Transactional(readOnly = true)
+    @RolesAllowed("admin.schedule:read")
+    fun getSuitableTimeslots(date: LocalDate, productsIds: List<UUID>) : List<LocalTime> {
+        val schedule = scheduleRepository.findByIdOrThrow(date)
+        val productsDuration =
+            productsIds.map { productRepository.findByIdOrThrow(it) }.sumOf { it.duration.toMinutes() }
+
+        val response: MutableList<LocalTime> = mutableListOf()
+        if (schedule.bookedTimeslots.none { it.timeslotStatus != TimeslotStatus.FREE }) {
+            var time = schedule.workingTimeFrom!!
+            while (durationIsLongerThanComparator(time, schedule.workingTimeTo!!, productsDuration)) {
+                response.add(time)
+                time = time.plusMinutes(interval)
+            }
+        } else {
+            schedule.bookedTimeslots
+                .filter { it.timeslotStatus != TimeslotStatus.FREE }
+                .sortedBy { it.timeFrom }
+                .addSuitableTime(
+                schedule.workingTimeFrom!!,
+                schedule.workingTimeTo!!,
+                productsDuration,
+                interval)
+                .run { response.addAll(this) }
+        }
+        return response
+    }
+
+
+
+private fun List<Timeslot>.addSuitableTime(workingTimeFrom : LocalTime, workingTimeTo : LocalTime, productsDuration : Long, interval : Long) : MutableList<LocalTime> {
+    val response = mutableListOf<LocalTime>()
+
+    var time = workingTimeFrom
+    while (durationIsLongerThanComparator(time, this.first().timeFrom, productsDuration)) {
+        response.add(time)
+        time = time.plusMinutes(interval)
+    }
+
+    this.iterator()
+        .withIndex()
+        .forEach {
+            if (it.index + 1 < this.size) {
+                val nextTimeFrom = this[it.index + 1].timeFrom
+                time = it.value.timeFrom.plus(it.value.duration)
+                while (durationIsLongerThanComparator(time, nextTimeFrom, productsDuration)) {
+                    response.add(time)
+                    time = time.plusMinutes(interval)
+                }
+            }
+        }
+
+    time = this.last().timeFrom.plus(this.last().duration)
+    while (durationIsLongerThanComparator(time, workingTimeTo, productsDuration)) {
+        response.add(time)
+        time = time.plusMinutes(interval)
+    }
+
+    return response
+}
 
     @Transactional
     @RolesAllowed("admin.schedule:write")
@@ -187,7 +252,7 @@ class ScheduleService(
         timeTo: LocalTime
     ): MutableList<TimeslotResponse> {
         val result = mutableListOf<TimeslotResponse>()
-        if (durationIsLongerThanShortestService(timeFrom, this.first().timeFrom)) result.add(
+        if (durationIsLongerThanComparator(timeFrom, this.first().timeFrom, comparator)) result.add(
             TimeslotResponse(
                 timeFrom,
                 this.first().timeFrom,
@@ -202,7 +267,7 @@ class ScheduleService(
                 if (it.index + 1 < this.size) {
                     val nextTimeFrom = this[it.index + 1].timeFrom
                     val thisTimeTo = it.value.timeFrom.plus(it.value.duration)
-                    if (durationIsLongerThanShortestService(thisTimeTo, nextTimeFrom)) {
+                    if (durationIsLongerThanComparator(thisTimeTo, nextTimeFrom, comparator)) {
                         result.add(
                             TimeslotResponse(
                                 thisTimeTo,
@@ -215,15 +280,17 @@ class ScheduleService(
             }
 
         val lastTimeTo = this.last().timeFrom.plus(this.last().duration)
-        if (durationIsLongerThanShortestService(
+        if (durationIsLongerThanComparator(
                 lastTimeTo,
-                timeTo
+                timeTo,
+                comparator
             )
         ) result.add(TimeslotResponse(lastTimeTo, timeTo, TimeslotStatus.FREE))
 
         return result
     }
 
-    private fun durationIsLongerThanShortestService(timeFrom: LocalTime, timeTo: LocalTime): Boolean =
-        Duration.between(timeFrom, timeTo).toMinutes() > TimeUnit.MINUTES.toMinutes(comparator)
+    private fun durationIsLongerThanComparator(timeFrom: LocalTime, timeTo: LocalTime, comparator: Long): Boolean =
+//    timeFrom < timeTo &&
+            Duration.between(timeFrom, timeTo).toMinutes() >= TimeUnit.MINUTES.toMinutes(comparator)
 }

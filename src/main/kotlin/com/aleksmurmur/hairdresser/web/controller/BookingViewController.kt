@@ -40,11 +40,25 @@ class BookingViewController (
         model.addAttribute("clients", clientService.getAllActive())
         model.addAttribute("products", productService.getAll())
         model.addAttribute("path", request.servletPath)
-        model.addAttribute("action", "create")
         return "bookings/bookingCreateForm"
     }
 
     @PostMapping("/new")
+    fun preprocessCreationForm(form: BookingCreateForm, result: BindingResult, session: SessionStatus, model: Model, request: HttpServletRequest): String {
+        return if (result.hasErrors()) "bookings/bookingCreateForm"
+        else {
+
+            model.addAttribute("schedule", scheduleService.getScheduleByDates(LocalDate.now(), LocalDate.now().plusDays(7)))
+            model.addAttribute("clients", clientService.getAllActive())
+            model.addAttribute("products", productService.getAll())
+            model.addAttribute("path", request.servletPath.plus("/create"))
+            model.addAttribute("time", scheduleService.getSuitableTimeslots(form.date!!, form.products ))
+            model.addAttribute("bookingForm", form)
+            "bookings/bookingCreateForm"
+        }
+    }
+
+    @PostMapping("/new/create")
     fun processCreationForm(@[Valid ModelAttribute("bookingForm")] form: BookingCreateForm, result: BindingResult, session: SessionStatus, model: Model): String {
         return if (result.hasErrors()) "bookings/bookingCreateForm"
         else {
