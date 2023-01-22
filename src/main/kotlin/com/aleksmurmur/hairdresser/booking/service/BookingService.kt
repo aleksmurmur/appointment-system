@@ -32,6 +32,7 @@ class BookingService(
     val scheduleRepository: ScheduleRepository
 ) {
 
+
     @Transactional(readOnly = true)
     @RolesAllowed("admin.bookings:read")
     fun getById(id: UUID): BookingResponse =
@@ -43,21 +44,21 @@ class BookingService(
     @RolesAllowed("admin.bookings:read")
     fun getAllActiveByClient(clientId: UUID): List<BookingResponse> =
         bookingRepository.findByClientAndBookingStatusEquals(clientRepository.findByIdOrThrow(clientId), BookingStatus.BOOKED)
-            .sortedWith(compareBy({it.timeFrom}, {it.daySchedule.persistentId}))
+            .sortedWith(compareBy<Booking> { it.daySchedule.persistentId}.thenBy{ it.timeFrom } )
             .map { BookingResponse.Mapper.from(it) }
 
     @Transactional(readOnly = true)
     @RolesAllowed("admin.bookings:read")
     fun getAllByClient(clientId: UUID): List<BookingResponse> =
         bookingRepository.findByClient(clientRepository.findByIdOrThrow(clientId))
-            .sortedWith(compareBy({it.timeFrom}, {it.daySchedule.persistentId}))
+            .sortedWith(compareBy<Booking> { it.daySchedule.persistentId}.thenBy{ it.timeFrom } )
             .map { BookingResponse.Mapper.from(it) }
 
     @Transactional(readOnly = true)
     @RolesAllowed("admin.bookings:read")
     fun getAllActive(): List<BookingResponse> =
         bookingRepository.findAllByBookingStatusEquals()
-            .sortedWith(compareBy({it.timeFrom}, {it.daySchedule.persistentId}))
+            .sortedWith(compareBy<Booking> { it.daySchedule.persistentId}.thenBy{ it.timeFrom } )
             .map { BookingResponse.Mapper.from(it) }
 
     @Transactional

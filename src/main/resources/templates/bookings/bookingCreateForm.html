@@ -7,62 +7,75 @@
 
 <div class="container">
 
-    <div th:insert="~{fragments/bodyHeader :: bodyHeader}" ></div>
+    <div th:insert="~{fragments/bodyHeader :: bodyHeader}"></div>
 
     <h2>
-    <span th:if="${action} == 'create'">Новое </span> Бронирование
-</h2>
-<form  th:object="${bookingForm}" th:method="post" th:action="${path}" class="form-horizontal" id="add-booking-form">
+        <span th:if="${action} == 'create'">Новое </span> Бронирование
+    </h2>
+    <form th:object="${bookingForm}" th:method="post" th:action="${path}" class="form-horizontal" id="add-booking-form">
 
 
-    <div class="control-group"  >
-        <label class="control-label">Выбрать дату:</label>
-        <div class="controls" >
-            <select th:value="*{date}" name="date" >
-                <option th:each="s : ${schedule}"
-                        th:if="${s.workingDay == true}"
-                        th:value="${s.date}"
-                        th:text="${#temporals.format(s.date, 'dd MMM yyyy')}">
-                </option>
-            </select>
+        <div class="control-group" >
+            <label class="control-label">Выбрать дату:</label>
+            <div class="controls">
+                <select th:value="*{date}" name="date"  id="date">
+                    <option th:each="s : ${schedule}"
+                            th:if="${s.workingDay == true}"
+                            th:selected="${s.date} == *{date}"
+                            th:value="${s.date}"
+                            th:text="${#temporals.format(s.date, 'dd MMM yyyy')}">
 
+                    </option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div class="control-group"  >
-        <label class="control-label">Выбрать время:</label>
-        <div class="controls" >
-                <input type="time" th:field="*{timeFrom}" />
-
+        <div class="control-group">
+            <label class="control-label">Выбрать клиента:</label>
+            <div class="controls">
+                <select th:value="*{clientId}" name="clientId">
+                    <option th:each="c : ${clients}"
+                            th:selected="${c.id} == *{clientId}"
+                            th:value="${c.id}"
+                            th:text="|${c.name} ${c.phone}|">
+                    </option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div class="control-group"  >
-        <label class="control-label">Выбрать клиента:</label>
-        <div class="controls">
-            <select th:value="*{clientId}" name="clientId">
-                <option th:each="c : ${clients}"
-                        th:value="${c.id}"
-                        th:text="|${c.name} ${c.phone}|">
-                </option>
-            </select>
+        <div class="control-group">
+            <label class="control-label">Выбрать услуги:</label>
+            <div class="controls">
+                <select class="form-control" th:field="*{products}" multiple="multiple">
+                    <option th:each="p : ${products}"
+                            th:field="*{products}"
+                            th:value="${p.id}"
+                            th:text="${p.name}">Название услуги
+                    </option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div class="control-group"  >
-        <label class="control-label">Выбрать услуги:</label>
-        <div class="controls">
-    <select class="form-control" th:field="*{products}" multiple="multiple">
-        <option th:each="p : ${products}"
-                th:field="*{products}"
-                th:value="${p.id}"
-                th:text="${p.name}">Название услуги</option>
-    </select>
+
+
+        <div class="control-group" th:if="${time != null}">
+            <label class="control-label">Выбрать время:</label>
+            <div class="controls">
+
+                <select th:value="*{timeFrom}" name="timeFrom">
+
+                    <option th:each="t : ${time}"
+                            th:value="${t}"
+                            th:text="${t}">
+
+                    </option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div th:insert="~{fragments/bodyHeader :: applyButton (value='бронирование')}" ></div>
-</form>
+        <button th:if="${time}==null" type="submit" class="btn btn-success">Показать доступное время</button>
+        <button th:if="${time}!=null" type="submit" class="btn btn-success">Забронировать</button>
+    </form>
 </div>
 
 <div th:insert="fragments/footer"></div>
