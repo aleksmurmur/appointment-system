@@ -25,6 +25,7 @@ class ScheduleController (
     private val scheduleService: ScheduleService
         ){
 
+
     @GetMapping("/{dateId}")
     fun getOneDaySchedule(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) dateId: LocalDate) : ResponseEntity<DayScheduleResponse> =
         ResponseEntity.ok(

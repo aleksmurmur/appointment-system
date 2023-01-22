@@ -21,3 +21,11 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+logging:
+  level:
+    com.aleksmurmur.*: DEBUG
+  file:
+    name: app.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB

@@ -17,6 +17,7 @@ import com.aleksmurmur.hairdresser.booking.domain.TimeslotStatus
 import com.aleksmurmur.hairdresser.schedule.repository.ScheduleRepository
 import com.aleksmurmur.hairdresser.exception.BadRequestException
 import jakarta.annotation.security.RolesAllowed
+import mu.KLogging
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -31,6 +32,8 @@ class BookingService(
     val productRepository: ProductRepository,
     val scheduleRepository: ScheduleRepository
 ) {
+
+    companion object: KLogging()
 
 
     @Transactional(readOnly = true)
@@ -89,6 +92,9 @@ class BookingService(
                 products = products
             )
         ).let { BookingResponse.Mapper.from(it) }
+            .also { logger.debug { """
+               Created booking with id: ${it.id} 
+            """ } }
 
     }
 
@@ -100,6 +106,9 @@ class BookingService(
                 timeslotStatus = TimeslotStatus.FREE
                 bookingStatus = BookingStatus.CANCELLED
             }
+            .also { logger.debug { """
+               Canceled booking with id: ${it.id} 
+            """ } }
     }
 
     @Transactional
@@ -122,6 +131,9 @@ class BookingService(
             booking.products.addAll(products)
         }
         return bookingRepository.save(booking).let { BookingResponse.Mapper.from(it) }
+            .also { logger.debug { """
+               Updated booking with id: ${it.id} 
+            """ } }
     }
 
     private fun getProducts(booking: Booking, request: BookingTimeAndProductsUpdateRequest): MutableList<Product> {
