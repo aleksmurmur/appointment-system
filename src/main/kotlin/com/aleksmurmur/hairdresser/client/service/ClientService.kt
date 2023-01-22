@@ -6,6 +6,7 @@ import com.aleksmurmur.hairdresser.client.dto.ClientResponse
 import com.aleksmurmur.hairdresser.client.repository.ClientRepository
 import com.aleksmurmur.hairdresser.common.jpa.findByIdOrThrow
 import jakarta.annotation.security.RolesAllowed
+import mu.KLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -14,6 +15,8 @@ import java.util.UUID
 class ClientService (
     val clientRepository: ClientRepository
         ){
+
+    companion object : KLogging()
 
     @Transactional(readOnly = true)
     @RolesAllowed("admin.clients:read")
@@ -44,6 +47,9 @@ class ClientService (
     fun createClient(request: ClientCreateOrUpdateRequest): ClientResponse {
         return clientRepository.save(createEntity(request))
             .let {ClientResponse.Mapper.from(it)}
+            .also { logger.debug { """
+               Created client with id: ${it.id} 
+            """ } }
     }
 
     @Transactional
@@ -52,6 +58,9 @@ class ClientService (
         val entity = getClient(id)
             .also { it.updateFromRequest(request) }
         return clientRepository.save(entity).let { ClientResponse.Mapper.from(it) }
+            .also { logger.debug { """
+               Updated client with id: ${it.id} 
+            """ } }
     }
 
 
@@ -60,6 +69,9 @@ class ClientService (
     fun delete(id: UUID) =
         getClient(id)
             .apply { deleted = true }
+            .also { logger.debug { """
+               Deleted client with id: ${it.id} 
+            """ } }
 
     private fun getClient(id: UUID) : Client =
         clientRepository.findByIdOrThrow(id)

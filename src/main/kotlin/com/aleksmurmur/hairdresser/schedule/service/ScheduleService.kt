@@ -14,6 +14,7 @@ import com.aleksmurmur.hairdresser.product.repository.ProductRepository
 import com.aleksmurmur.hairdresser.schedule.dto.TimetableCreateRequest
 import com.aleksmurmur.hairdresser.schedule.repository.ScheduleRepository
 import jakarta.annotation.security.RolesAllowed
+import mu.KLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -31,6 +32,8 @@ class ScheduleService(
     @Value("\${app.service.shortest}") val comparator: Long,
     @Value("\${app.service.interval}") val interval: Long,
 ) {
+
+    companion object : KLogging()
 
     @Transactional(readOnly = true)
     @RolesAllowed("admin.schedule:read")
@@ -114,7 +117,11 @@ private fun List<Timeslot>.addSuitableTime(workingTimeFrom : LocalTime, workingT
     @RolesAllowed("admin.schedule:write")
     fun createDaySchedule(request: DayScheduleCreateOrUpdateRequest): DayScheduleResponse {
         throwExceptionIfScheduleExists(request.date)
-        return scheduleRepository.save(createEntity(request)).mapToDto()
+        return scheduleRepository.save(createEntity(request))
+            .mapToDto()
+            .also { logger.debug { """
+            Day schedule created on date: ${it.date}
+        """ } }
     }
 
     @Transactional
@@ -144,7 +151,9 @@ private fun List<Timeslot>.addSuitableTime(workingTimeFrom : LocalTime, workingT
                          )
                      }
              }
-        return result
+        return result.also { logger.debug { """
+            Timetable created between dates: ${it.first().date} to ${it.last().date}
+        """ } }
     }
 
     @Transactional
@@ -153,6 +162,9 @@ private fun List<Timeslot>.addSuitableTime(workingTimeFrom : LocalTime, workingT
         val daySchedule = scheduleRepository.findByIdOrThrow(date)
         if (daySchedule.bookedTimeslots.any { it.timeslotStatus == TimeslotStatus.BUSY }) throw UnavailableActionException("На $date уже есть записи, отмените или перенесите их")
         return scheduleRepository.delete(daySchedule)
+            .also { logger.debug { """
+            Deleted day schedule on date: $date
+        """} }
     }
 
     @Transactional
@@ -165,6 +177,9 @@ private fun List<Timeslot>.addSuitableTime(workingTimeFrom : LocalTime, workingT
             .forEach {
                 scheduleRepository.delete(it)
             }
+            .also { logger.debug { """
+            Deleted schedules between dates: $dateFrom to $dateTo
+        """ } }
 
 
     @Transactional
@@ -185,7 +200,11 @@ private fun List<Timeslot>.addSuitableTime(workingTimeFrom : LocalTime, workingT
                 }
         }
 
-        return scheduleRepository.save(daySchedule.updateEntity(request)).mapToDto()
+        return scheduleRepository.save(daySchedule.updateEntity(request))
+            .mapToDto()
+            .also { logger.debug { """
+            Day schedule updated on date: ${it.date}
+        """} }
 
     }
 

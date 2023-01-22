@@ -7,6 +7,7 @@ import com.aleksmurmur.hairdresser.product.dto.ProductResponse
 
 import com.aleksmurmur.hairdresser.product.repository.ProductRepository
 import jakarta.annotation.security.RolesAllowed
+import mu.KLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
@@ -16,6 +17,8 @@ import java.util.UUID
 class ProductService (
     val productRepository: ProductRepository
         ){
+
+    companion object : KLogging()
 
     @Transactional(readOnly = true)
     @RolesAllowed("admin.products:read")
@@ -41,6 +44,9 @@ class ProductService (
     fun createProduct(request: ProductCreateRequest) : ProductResponse =
         productRepository.save(createEntity(request))
             .let { ProductResponse.Mapper.from(it) }
+            .also { logger.debug { """
+               Created product with id: ${it.id} 
+            """ } }
 
     @Transactional
     @RolesAllowed("admin.products:write")
@@ -55,6 +61,9 @@ class ProductService (
             }
         return productRepository.save(product)
             .let { ProductResponse.Mapper.from(it)}
+            .also { logger.debug { """
+               Updated product with id: ${it.id} 
+            """ } }
     }
 
     @Transactional
@@ -62,6 +71,9 @@ class ProductService (
     fun deleteProduct(id: UUID) =
         productRepository.findByIdOrThrow(id)
             .apply { deleted = true }
+            .also { logger.debug { """
+               Deleted product with id: ${it.id} 
+            """ } }
 
     private fun createEntity(request: ProductCreateRequest) =
         Product(
