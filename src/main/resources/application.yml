@@ -21,6 +21,25 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  quartz:
+    jdbc:
+      initialize-schema:
+        always
+    job-store-type: jdbc
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceId: AUTO
+          threadPool:
+            threadNamePrefix: quartz-worker
+            threadCount: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+          jobStore:
+            isClustered: true
+            clusterCheckinInterval: 5000
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+
 logging:
   level:
     com.aleksmurmur.*: DEBUG
