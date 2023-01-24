@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:insert="fragments/header :: header (value='Login page')"></div>
+</head>
+<body>
+
+<div class="container">
+
+    <div th:insert="fragments/bodyHeader :: bodyHeader"></div>
+
+
+    <form th:action="@{/login}" method="post">
+        <table>
+            <thead>
+            <tr>
+            <th> Логин:</th>
+            <td><input type="text" name="username"/> </label></td>
+            </tr>
+            <tr>
+                <th> Пароль:</th>
+                <td><input type="password" name="password"/></td>
+            </tr>
+            <tr> <th><input type="submit" value="Войти" class="btn btn-medium"/></th></tr>
+            </thead>
+        </table>
+    </form>
+</div>
+
+</body>
+</html>

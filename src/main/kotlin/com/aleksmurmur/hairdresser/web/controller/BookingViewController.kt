@@ -52,19 +52,29 @@ class BookingViewController (
             model.addAttribute("clients", clientService.getAllActive())
             model.addAttribute("products", productService.getAll())
             model.addAttribute("path", request.servletPath.plus("/create"))
-            model.addAttribute("time", scheduleService.getSuitableTimeslots(form.date!!, form.products ))
+            model.addAttribute("time",
+                if (form.products.isEmpty()) null else scheduleService.getSuitableTimeslots(form.date!!, form.products ))
             model.addAttribute("bookingForm", form)
             "bookings/bookingCreateForm"
         }
     }
 
     @PostMapping("/new/create")
-    fun processCreationForm(@[Valid ModelAttribute("bookingForm")] form: BookingCreateForm, result: BindingResult, session: SessionStatus, model: Model): String {
-        return if (result.hasErrors()) "bookings/bookingCreateForm"
+    fun processCreationForm(@[Valid ModelAttribute("bookingForm")] form: BookingCreateForm, result: BindingResult, session: SessionStatus, model: Model , request: HttpServletRequest): String {
+         if (result.hasErrors()) {
+             model.addAttribute("schedule", scheduleService.getScheduleByDates(LocalDate.now(), LocalDate.now().plusDays(7)))
+             model.addAttribute("clients", clientService.getAllActive())
+             model.addAttribute("products", productService.getAll())
+             model.addAttribute("path", request.servletPath)
+             model.addAttribute("time",
+                 if (form.products.isEmpty()) null else scheduleService.getSuitableTimeslots(form.date!!, form.products ))
+             model.addAttribute("bookingForm", form)
+             return "bookings/bookingCreateForm"
+         }
         else {
             val response = bookingService.createBooking(form.toCreateRequest())
             session.setComplete()
-            "redirect:$BOOKINGS_VIEW_PATH/${response.id}"
+            return "redirect:$BOOKINGS_VIEW_PATH/${response.id}"
         }
     }
 
