@@ -39,6 +39,11 @@ spring:
             isClustered: true
             clusterCheckinInterval: 5000
             driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+  security:
+    user:
+      name: changeme
+      password: changeme
+      roles: changeme
 
 logging:
   level:
