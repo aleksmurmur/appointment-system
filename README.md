@@ -1,8 +1,6 @@
 # appointment-system
 
-A pet-project of an individual appointment system that has 2 goals:
-- being usefull
-- demonstrate technologies
+A pet-project of an individual appointment system
 
 Currently it has:
 - rest-api
